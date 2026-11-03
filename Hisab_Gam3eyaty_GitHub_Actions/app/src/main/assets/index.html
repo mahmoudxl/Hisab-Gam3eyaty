@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#123c35"><title>حاسبة جمعياتي</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f6f5;color:#172a27;font-family:Tahoma,Arial,sans-serif}
+header{background:linear-gradient(135deg,#123c35,#207565);color:white;padding:24px 18px 28px;border-radius:0 0 24px 24px}
+h1{font-size:25px;margin:0 0 7px}.sub{opacity:.85;font-size:13px}
+.wrap{padding:16px;max-width:760px;margin:auto}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:-8px}
+.stat,.panel,.group{background:white;border-radius:16px;padding:15px;box-shadow:0 3px 14px #123c3510}
+.stat small{color:#6c7d78}.stat strong{display:block;font-size:21px;margin-top:7px;color:#176653}
+.toolbar{display:flex;gap:9px;align-items:center;justify-content:space-between;margin:20px 0 12px}
+button{border:0;border-radius:11px;padding:11px 15px;background:#176653;color:white;font-weight:bold;font-size:14px}
+button.light{background:#e6f1ed;color:#176653}.groups{display:grid;gap:12px}
+.grouphead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.group h3{margin:0 0 5px;font-size:17px}.muted{color:#71817c;font-size:12px}
+.amount{font-weight:bold;color:#176653}.progress{height:7px;background:#edf1ef;border-radius:9px;margin:13px 0;overflow:hidden}.progress span{display:block;height:100%;background:#2c9b7d}
+.metrics{display:flex;gap:15px;flex-wrap:wrap;font-size:12px;color:#62736e}
+.details{margin-top:12px;border-top:1px solid #edf1ef;padding-top:8px}
+.item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f3f2;gap:10px}
+.item:last-child{border:0}.item b{font-size:13px}.item small{display:block;color:#71817c;margin-top:4px}
+.paid{background:#e6f5ed;color:#18734e}.unpaid{background:#fff2df;color:#9a620c}
+form{display:grid;gap:12px}label{font-size:13px;color:#53645f}input,select{width:100%;padding:12px;border:1px solid #dce6e2;border-radius:10px;font:inherit;background:white;margin-top:6px}
+.modal{position:fixed;inset:0;background:#0c211dcc;display:none;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.dialog{background:white;border-radius:18px;padding:20px;width:100%;max-width:420px}.dialog h2{margin:0 0 16px}.actions{display:flex;gap:8px;margin-top:16px}.actions>*{flex:1}
+.foot{text-align:center;color:#82908b;font-size:11px;padding:22px}
+</style></head><body>
+<header><h1>حاسبة جمعياتي</h1><div class="sub">تابع جمعياتك ومواعيد الدفع بسهولة</div></header>
+<main class="wrap">
+<div class="stats"><div class="stat"><small>إجمالي المدفوع</small><strong id="totalPaid">0 ج.م</strong></div><div class="stat"><small>إجمالي المتبقي</small><strong id="totalRemain">0 ج.م</strong></div></div>
+<div class="toolbar"><div><b>الجمعيات</b><div class="muted" id="count"></div></div><button onclick="openModal()">＋ إضافة جمعية</button></div>
+<div class="groups" id="groups"></div><div class="foot">بياناتك محفوظة على هذا الجهاز</div>
+</main>
+<div class="modal" id="modal"><div class="dialog"><h2>إضافة جمعية جديدة</h2><form id="newForm">
+<label>اسم الجمعية<input id="gname" required maxlength="50" placeholder="مثال: جمعية الأسرة"></label>
+<label>ميعاد الدفع<select id="freq"><option value="يومي">يومي</option><option value="أسبوعي">أسبوعي</option><option value="شهري" selected>شهري</option></select></label>
+<label>بداية مواعيد الدفع<input id="start" type="date" required></label>
+<div class="actions"><button type="submit">إضافة</button><button type="button" class="light" onclick="closeModal()">إلغاء</button></div>
+</form></div></div>
+<script>
+const seed={"groups": [{"id": "bassem", "name": "جمعية بسام الشهرية", "frequency": "شهري", "amount": 5000, "items": [{"n": 1, "date": "2026-11-15", "paid": true}, {"n": 2, "date": "2026-12-15", "paid": false}, {"n": 3, "date": "2027-01-15", "paid": false}, {"n": 4, "date": "2027-02-15", "paid": false}, {"n": 5, "date": "2027-03-15", "paid": false}, {"n": 6, "date": "2027-04-15", "paid": false}, {"n": 7, "date": "2027-05-15", "paid": false}, {"n": 8, "date": "2027-06-15", "paid": false}, {"n": 9, "date": "2027-07-15", "paid": false}, {"n": 10, "date": "2027-08-15", "paid": false}, {"n": 11, "date": "2027-09-15", "paid": false}, {"n": 12, "date": "2027-10-15", "paid": false}, {"n": 13, "date": "2027-11-15", "paid": false}, {"n": 14, "date": "2027-12-15", "paid": false}, {"n": 15, "date": "2028-01-15", "paid": false}, {"n": 16, "date": "2028-02-15", "paid": false}, {"n": 17, "date": "2028-03-15", "paid": false}, {"n": 18, "date": "2028-04-15", "paid": false}, {"n": 19, "date": "2028-05-15", "paid": false}, {"n": 20, "date": "2028-06-15", "paid": false}]}, {"id": "shaimaa", "name": "جمعية شيماء الشهرية", "frequency": "شهري", "amount": 2000, "items": [{"n": 1, "date": "2026-10-15", "paid": true}, {"n": 2, "date": "2026-11-15", "paid": true}, {"n": 3, "date": "2026-12-15", "paid": false}, {"n": 4, "date": "2027-01-15", "paid": false}, {"n": 5, "date": "2027-02-15", "paid": false}, {"n": 6, "date": "2027-03-15", "paid": false}, {"n": 7, "date": "2027-04-15", "paid": false}, {"n": 8, "date": "2027-05-15", "paid": false}, {"n": 9, "date": "2027-06-15", "paid": false}, {"n": 10, "date": "2027-07-15", "paid": false}, {"n": 11, "date": "2027-08-15", "paid": false}, {"n": 12, "date": "2027-09-15", "paid": false}, {"n": 13, "date": "2027-10-15", "paid": false}, {"n": 14, "date": "2027-11-15", "paid": false}, {"n": 15, "date": "2027-12-15", "paid": false}, {"n": 16, "date": "2028-01-15", "paid": false}, {"n": 17, "date": "2028-02-15", "paid": false}, {"n": 18, "date": "2028-03-15", "paid": false}, {"n": 19, "date": "2028-04-15", "paid": false}, {"n": 20, "date": "2028-05-15", "paid": false}]}]};
+let data;
+try{data=JSON.parse(localStorage.getItem('gam3eyaty_v1'))||seed}catch(e){data=seed}
+const money=n=>new Intl.NumberFormat('ar-EG').format(n)+' ج.م';
+const fmt=s=>new Date(s+'T12:00:00').toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'});
+function totals(){let paid=0,remain=0;data.groups.forEach(g=>g.items.forEach(i=>{if(g.amount){if(i.paid)paid+=g.amount;else remain+=g.amount}}));return {paid,remain}}
+function save(){localStorage.setItem('gam3eyaty_v1',JSON.stringify(data));render()}
+function render(){
+ let t=totals();document.getElementById('totalPaid').textContent=money(t.paid);document.getElementById('totalRemain').textContent=money(t.remain);
+ document.getElementById('count').textContent=data.groups.length+' جمعيات';
+ document.getElementById('groups').innerHTML=data.groups.map((g,idx)=>{
+ let done=g.items.filter(x=>x.paid).length, pct=g.items.length?done/g.items.length*100:0;
+ let details=g.items.map((x,j)=>`<div class="item"><div><b>دفعة ${x.n}</b><small>${fmt(x.date)} ${g.amount?' · '+money(g.amount):''}</small></div><button class="${x.paid?'paid':'unpaid'}" onclick="toggle(${idx},${j})">${x.paid?'تم الدفع':'لم يتم الدفع'}</button></div>`).join('');
+ return `<section class="group"><div class="grouphead"><div><h3>${esc(g.name)}</h3><div class="muted">الدفع ${g.frequency}${g.amount?' · قيمة الدفعة '+money(g.amount):''}</div></div><button class="light" onclick="expand(${idx})" id="exp${idx}">عرض الدفعات</button></div><div class="progress"><span style="width:${pct}%"></span></div><div class="metrics"><span>المدفوع: ${done} من ${g.items.length}</span><span>المتبقي: ${g.items.length-done}</span></div><div class="details" id="det${idx}" style="display:none">${details}</div></section>`
+ }).join('')||'<div class="panel">لا توجد جمعيات بعد. اضغط «إضافة جمعية» للبدء.</div>';
+}
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toggle(i,j){data.groups[i].items[j].paid=!data.groups[i].items[j].paid;save()}
+function expand(i){let el=document.getElementById('det'+i),b=document.getElementById('exp'+i);let open=el.style.display==='none';el.style.display=open?'block':'none';b.textContent=open?'إخفاء الدفعات':'عرض الدفعات'}
+function openModal(){document.getElementById('start').value=new Date().toISOString().slice(0,10);document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function addDays(date,days){let d=new Date(date+'T12:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
+function addMonths(date,n){let d=new Date(date+'T12:00:00'),day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+n);let last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,last));return d.toISOString().slice(0,10)}
+document.getElementById('newForm').addEventListener('submit',e=>{
+ e.preventDefault();let name=document.getElementById('gname').value.trim(),frequency=document.getElementById('freq').value,start=document.getElementById('start').value;if(!name||!start)return;
+ let items=[];for(let i=0;i<20;i++){let date=frequency==='يومي'?addDays(start,i):frequency==='أسبوعي'?addDays(start,i*7):addMonths(start,i);items.push({n:i+1,date,paid:false})}
+ data.groups.push({id:'g'+Date.now(),name,frequency,amount:0,items});save();closeModal();e.target.reset();
+});
+render();
+</script></body></html>
